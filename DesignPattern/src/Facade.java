@@ -1,12 +1,44 @@
+import java.io.*;
+import java.util.Scanner;
+
 public class Facade {
     private int userType;
     private Product selectedProduct;
     private int nProductCategory;
     private ClassProductionList theProductList;
     private Person thePerson;
-    public boolean login(){
-        System.out.println("Logged in!!");
-        return true;
+    public boolean login() throws IOException {
+        File b=new File("src/BuyerInfo.txt");
+        File s=new File("src/SellerInfo.txt");
+        BufferedReader brb=new BufferedReader(new FileReader(b));
+        BufferedReader brs=new BufferedReader(new FileReader(s));
+        Scanner sc=new Scanner(System.in);
+        System.out.println("Enter whether buyer(enter 0) or seller(enter 1): ");
+        userType=sc.nextInt();
+        System.out.println("Enter Username: ");
+        String username=sc.next();
+        System.out.println("Enter Password: ");
+        String password=sc.next();
+        String st;
+        String[] creds;
+        if(userType==0){
+            while((st=brb.readLine())!=null){
+                creds=st.split(":");
+                if(username.equals(creds[0])&&password.equals(creds[1])) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        else {
+            while((st=brs.readLine())!=null){
+                creds=st.split(":");
+                if(username.equals(creds[0])&&password.equals(creds[1])) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
     public void addTrading(){
         System.out.println("Trading added");
