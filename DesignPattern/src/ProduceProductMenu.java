@@ -1,6 +1,21 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+
 public class ProduceProductMenu implements ProductMenu{
-    public void showMenu(){
-        System.out.println("Menu:");
+    ClassProductList item=new ClassProductList();
+    public ClassProductList showMenu() throws IOException {
+        File f=new File("src/ProductInfo.txt");
+        BufferedReader br=new BufferedReader(new FileReader(f));
+        String str;
+        String[] items;
+        while((str=br.readLine())!=null){
+            items=str.split(":");
+            if(items[0].equals("Produce"))
+                item.add(items[1]);
+        }
+        return item;
     }
     public void showAddButton(){
         System.out.println("Add Button:");

@@ -1,6 +1,18 @@
+import java.io.*;
+
 public class MeatProductMenu implements ProductMenu{
-    public void showMenu(){
-        System.out.println("Menu:");
+    ClassProductList item=new ClassProductList();
+    public ClassProductList showMenu() throws IOException {
+        File f=new File("src/ProductInfo.txt");
+        BufferedReader br=new BufferedReader(new FileReader(f));
+        String str;
+        String[] items;
+        while((str=br.readLine())!=null){
+            items=str.split(":");
+            if(items[0].equals("Meat"))
+                item.add(items[1]);
+        }
+        return item;
     }
     public void showAddButton(){
         System.out.println("Add Button:");

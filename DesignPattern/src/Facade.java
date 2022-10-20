@@ -5,7 +5,7 @@ public class Facade {
     private int userType;
     private Product selectedProduct;
     private int nProductCategory;
-    private ClassProductionList theProductList;
+    private ClassProductList theProductList=new ClassProductList();
     private Person thePerson;
     public boolean login() throws IOException {
         File b=new File("src/BuyerInfo.txt");
@@ -25,6 +25,7 @@ public class Facade {
             while((st=brb.readLine())!=null){
                 creds=st.split(":");
                 if(username.equals(creds[0])&&password.equals(creds[1])) {
+                    thePerson=new Buyer(); //Implementation of Factory and Bridge
                     return true;
                 }
             }
@@ -34,6 +35,7 @@ public class Facade {
             while((st=brs.readLine())!=null){
                 creds=st.split(":");
                 if(username.equals(creds[0])&&password.equals(creds[1])) {
+                    thePerson=new Seller(); //Implementation of Factory and Bridge
                     return true;
                 }
             }
@@ -64,7 +66,23 @@ public class Facade {
     public void createProductList(){
         System.out.println("Product List Created Successfully");
     }
-    public void AttachProductToUser(){
+    public void AttachProductToUser() throws IOException {
+        Scanner sc=new Scanner(System.in);
+        File up=new File("src/UserProduct.txt");
+        BufferedReader br=new BufferedReader(new FileReader(up));
+        String st;
+        String[] ustopro;
+        while((st=br.readLine())!=null){
+            ustopro=st.split(":");
+            theProductList.add(ustopro[1]);
+        }
+        System.out.println("Do you want meat(Type Meat) menu or want to produce menu(Type Produce)?");
+        String opt=sc.next();
+        ClassProductList prod=new ClassProductList();
+        switch (opt){
+            case "Meat": prod=thePerson.CreateProductMenu("Meat");
+            case "Produce":prod=thePerson.CreateProductMenu("Produce");
+        }
         System.out.println("Product attached to the User Successfully");
     }
     public Product SelectProduct(){

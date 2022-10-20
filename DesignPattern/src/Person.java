@@ -1,3 +1,5 @@
+import java.io.IOException;
+
 public abstract class Person {
     protected ProductMenu theProductMenu;
     public abstract void showMenu();
@@ -13,5 +15,5 @@ public abstract class Person {
     public void showLabels(){
         System.out.println("Labels: ");
     }
-    public abstract ProductMenu CreateProductMenu();
+    public abstract ClassProductList CreateProductMenu(String item) throws IOException;
 }
