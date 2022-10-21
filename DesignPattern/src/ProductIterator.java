@@ -1,9 +1,11 @@
 import java.util.Iterator;
-import java.util.function.Consumer;
 
-public class OfferingIterator implements ListIterator {
-    int index;
-    private OfferingList list=new OfferingList();
+public class ProductIterator implements ListIterator{
+    private int index;
+    private ClassProductList list=new ClassProductList();
+    ProductIterator(ClassProductList list){
+        this.list=list;
+    }
     public boolean hasNext(){
         if(index<list.size())
             return true;
@@ -17,12 +19,13 @@ public class OfferingIterator implements ListIterator {
         return null;
     }
 
+    @Override
     public void remove() {
         System.out.println("Removed!!");
     }
 
-    public void MoveToHead(){
-        System.out.println("Moved!!");
+    @Override
+    public void MoveToHead() {
+        System.out.println("Moved Header!!");
     }
-
 }

@@ -1,46 +1,25 @@
 import java.io.*;
+import java.util.Iterator;
 import java.util.Scanner;
 
 public class Facade {
     private int userType;
     private Product selectedProduct;
-    private int nProductCategory;
-    private ClassProductList theProductList=new ClassProductList();
+    protected int nProductCategory;
+    protected ClassProductList theProductList=new ClassProductList();
+    protected ClassProductList prod;
     private Person thePerson;
-    public boolean login() throws IOException {
-        File b=new File("src/BuyerInfo.txt");
-        File s=new File("src/SellerInfo.txt");
-        BufferedReader brb=new BufferedReader(new FileReader(b));
-        BufferedReader brs=new BufferedReader(new FileReader(s));
-        Scanner sc=new Scanner(System.in);
-        System.out.println("Enter whether buyer(enter 0) or seller(enter 1): ");
-        userType=sc.nextInt();
-        System.out.println("Enter Username: ");
-        String username=sc.next();
-        System.out.println("Enter Password: ");
-        String password=sc.next();
-        String st;
-        String[] creds;
-        if(userType==0){
-            while((st=brb.readLine())!=null){
-                creds=st.split(":");
-                if(username.equals(creds[0])&&password.equals(creds[1])) {
-                    thePerson=new Buyer(); //Implementation of Factory and Bridge
-                    return true;
-                }
-            }
-            return false;
-        }
-        else {
-            while((st=brs.readLine())!=null){
-                creds=st.split(":");
-                if(username.equals(creds[0])&&password.equals(creds[1])) {
-                    thePerson=new Seller(); //Implementation of Factory and Bridge
-                    return true;
-                }
-            }
-            return false;
-        }
+    ClassProductList list=new ClassProductList();
+    public void start() throws IOException {
+        Login l=new Login();
+        login(l);
+        AttachProductToUser();
+
+    }
+    public void login(Login l) throws IOException {
+        l.login();
+        userType=l.userType;
+        thePerson=l.thePerson;
     }
     public void addTrading(){
         System.out.println("Trading added");
@@ -58,8 +37,15 @@ public class Facade {
         System.out.println("Bidding Submitted");
     }
     public void remind(){
+        ReminderVisitor rm=new ReminderVisitor();
+        this.accept(rm);
         System.out.println("Reminder!!");
     }
+
+    private void accept(ReminderVisitor rm) {
+        rm.visitFacade(this);
+    }
+
     public void createUser(UserInfoItem userInfoItem){
         System.out.println("User Created Successfully");
     }
@@ -74,16 +60,55 @@ public class Facade {
         String[] ustopro;
         while((st=br.readLine())!=null){
             ustopro=st.split(":");
+//            System.out.println(ustopro[1]);
             theProductList.add(ustopro[1]);
         }
+
         System.out.println("Do you want meat(Type Meat) menu or want to produce menu(Type Produce)?");
         String opt=sc.next();
-        ClassProductList prod=new ClassProductList();
+        this.prod= new ClassProductList();
+        ProductIterator it; //Implemented Iterator
+        ProductIterator it2;//Implemented
+        String s,s1;
         switch (opt){
-            case "Meat": prod=thePerson.CreateProductMenu("Meat");
-            case "Produce":prod=thePerson.CreateProductMenu("Produce");
+            case "Meat": this.prod=thePerson.CreateProductMenu("Meat");
+                         it=new ProductIterator(prod);
+                         it2=new ProductIterator(theProductList);
+                         while(it.hasNext()){
+//                             s= (String) it.next();
+                             while(it2.hasNext()) {
+                                    if(it.hasNext()==false)
+                                        break;
+                                    s1=(String) it2.next();
+                                    s=(String) it.next();
+                                 if (s1.equals(s)) {
+                                     list.add(s);
+                                 }
+                             }
+                         }
+                            break;
+            case "Produce":this.prod=thePerson.CreateProductMenu("Produce");
+                            it=new ProductIterator(prod);
+                            it2=new ProductIterator(theProductList);
+                            while(it.hasNext()){
+
+                                while(it2.hasNext()) {
+                                    if(it.hasNext()==false)
+                                        break;
+                                    s= (String) it.next();
+                                    s1=(String) it2.next();
+                                    if (s1.equals(s)) {
+                                        list.add(s);
+                                    }
+                                }
+                            }
+                            break;
         }
-        System.out.println("Product attached to the User Successfully");
+        System.out.println("\nThe Final List ordered is(Implemented Using Iterator): ");
+        for(int i=0;i< list.size();i++){
+            System.out.println(list.get(i));
+        }
+        System.out.println("\nProduct attached to the User Successfully");
     }
     public Product SelectProduct(){
         Product p=new Product();

@@ -10,7 +10,7 @@ public class Seller extends Person {
             MeatProductMenu mpm = new MeatProductMenu();
             items = mpm.showMenu();
         }
-        else{
+        else if(item=="Produce"){
             ProduceProductMenu ppm=new ProduceProductMenu();
             items=ppm.showMenu();
         }
